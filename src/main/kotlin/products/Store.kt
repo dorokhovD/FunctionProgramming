@@ -1,22 +1,22 @@
 package org.example.products
 
+import org.example.extensions.filter
+import org.example.extensions.transform
+
 fun main() {
-    val products = ProductsRepository.products
+    ProductsRepository.products.also {
+        println("Filter by category CLOTHING")
+    }.filter { it.productCategory == ProductCategory.CLOTHING }.also {
+        println("Increase price")
+    }.map { it.copy(productPrice = it.productPrice * 2) }.also {
+        println("Convert to string")
+    }.map { "${it.id} - ${it.productName} - ${it.productPrice}" }.also {
+     println("Print info")
+    }.forEach { println(it) }
 
-    var filtered = filter(products) {it.productPrice > 500}
-    filtered = filter(filtered) {it.productRating > 4}
-    filtered = filter(filtered) {it.productCategory == ProductCategory.SPORTS }
+//    var filtered = filter(products) {it.productCategory == ProductCategory.CLOTHING }
+//    filtered = transform(filtered) {  }
+//    val filteredAsString = transform(filtered) { "${it.id} - ${it.productName} - ${it.productPrice}" }
 
-    for (productCard in filtered) {
-        println(productCard)
-    }
 }
 
-fun filter(productCards: List<ProductCard>, isSuitable: (ProductCard) -> Boolean): List<ProductCard> {
-    val result = mutableListOf<ProductCard>()
-    for (card in productCards) {
-        if (isSuitable(card))
-            result.add(card)
-    }
-    return result
-}
